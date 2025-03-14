@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  http11:
+    image: ivplay4689/corridor:500d41
+    container_name: http11
+    environment:
+      - SPRING_PROFILES_ACTIVE=h1
+    ports:
+      - "8080:8080"
+
+  http2:
+    image: ivplay4689/corridor:500d41
+    container_name: http2
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+    ports:
+      - "8443:8443"

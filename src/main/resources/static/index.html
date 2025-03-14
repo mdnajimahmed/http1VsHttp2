@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H11 vs H2</title>
+</head>
+<body>
+<h1>Hello Curious Mind!</h1>
+
+<!-- Input for number of IDs -->
+<label for="numIds">Enter number of IDs: </label>
+<input type="number" id="numIds" value="7" min="1" />
+<button onclick="fetchHello()">Call API</button>
+
+<ul id="results"></ul>
+<p id="timeTaken"></p>
+
+<script>
+    async function fetchHello() {
+        // Reset time and previous results
+        document.getElementById("timeTaken").textContent = ''; // Clear previous time elapsed
+        const resultsList = document.getElementById("results");
+        resultsList.innerHTML = ""; // Clear previous results
+
+        // Get the number of IDs from the input field
+        const numIds = parseInt(document.getElementById("numIds").value);
+        const ids = Array.from({ length: numIds }, (_, i) => i + 1); // [1,2,3,...,numIds]
+        const baseUrl = window.location.origin;
+
+        // Create an array of fetch promises
+        const promises = ids.map(id => fetch(`${baseUrl}/api/hello?id=${id}`).then(res => res.text()));
+
+        try {
+            const start = performance.now();
+            const responses = await Promise.all(promises);
+            const end = performance.now();
+            const elapsedTime = (end - start).toFixed(2); // Time taken for all requests
+
+            // Display the results
+            responses.forEach((text, index) => {
+                const li = document.createElement("li");
+                li.textContent = `ID ${ids[index]}: ${text}`;
+                resultsList.appendChild(li);
+            });
+
+            // Display the time taken
+            document.getElementById("timeTaken").textContent = `Total time taken: ${elapsedTime} ms`;
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+</script>
+</body>
+</html>
